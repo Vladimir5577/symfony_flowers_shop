@@ -1,0 +1,55 @@
+services:
+
+  php:
+    build:
+      context: .
+      dockerfile: ./docker_env/php/Dockerfile
+    container_name: php_container
+    # no need 9000 by default
+#    ports:
+#      - "9000:9000"   # Expose PHP-FPM port
+    volumes:
+      - ./:/var/www/html
+      - ./docker_env/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./docker_env/php/conf.d/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+      - ./docker_env/php/conf.d/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - ./docker_env/php/conf.d/timezone.ini:/usr/local/etc/php/conf.d/timezone.ini
+    environment:
+      PHP_IDE_CONFIG: serverName=symfony_app
+      XDEBUG_CONFIG: client_host=host.docker.internal client_port=9003
+    networks:
+      - app-net
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker_env/nginx/Dockerfile
+    container_name: nginx_web
+    ports:
+      - 80:80
+    volumes:
+      - ./docker_env/nginx/config/default.conf:/etc/nginx/conf.d/default.conf
+      - ./:/var/www/html
+    networks:
+      - app-net
+
+  postgres:
+    container_name: postgres
+    image: postgres:16.4
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /data/postgres
+    volumes:
+      - ./../postgres_data:/data/postgres
+    ports:
+      - 5432:5432
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    name: app-net
+    driver: bridge
+
