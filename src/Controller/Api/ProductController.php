@@ -124,12 +124,12 @@ class ProductController extends AbstractController
         $photos = [];
         foreach ($product->getImages() as $img) {
             $name = $img->getImageName();
-            $url = '/uploads/products/' . $name;
+            $path = 'uploads/products/' . $name;
             $photos[] = [
-                'mini' => $url,
-                'thumb' => $url,
-                'detail' => $url,
-                'original' => $url,
+                'mini' => '/media/cache/mini/' . $path,
+                'thumb' => '/media/cache/thumb/' . $path,
+                'detail' => '/media/cache/detail/' . $path,
+                'original' => '/' . $path,
             ];
         }
 
