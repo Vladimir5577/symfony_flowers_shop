@@ -4,6 +4,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\Order;
 use App\Enum\OrderStatus;
+use App\Enum\DeliveryType;
+use App\Enum\PaymentMethod;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -49,11 +51,19 @@ class OrderCrudController extends AbstractCrudController
                 OrderStatus::cases(),
             ));
         yield IntegerField::new('totalAmount', 'Сумма (₽)');
-        yield TextField::new('deliveryType', 'Доставка')->hideOnForm();
+        yield ChoiceField::new('deliveryType', 'Доставка')
+            ->setChoices(array_combine(
+                array_map(fn(DeliveryType $d) => $d->value, DeliveryType::cases()),
+                DeliveryType::cases(),
+            ))->hideOnForm();
         yield TextField::new('deliveryAddress', 'Адрес')->hideOnIndex();
         yield TextField::new('deliveryTimeSlot', 'Время')->hideOnIndex();
         yield TextareaField::new('comment', 'Комментарий')->hideOnIndex();
-        yield TextField::new('paymentMethod', 'Оплата')->hideOnIndex();
+        yield ChoiceField::new('paymentMethod', 'Оплата')
+            ->setChoices(array_combine(
+                array_map(fn(PaymentMethod $p) => $p->value, PaymentMethod::cases()),
+                PaymentMethod::cases(),
+            ))->hideOnIndex();
         yield AssociationField::new('customer', 'Клиент')->hideOnIndex();
         yield DateTimeField::new('createdAt', 'Создан')->hideOnForm();
     }
