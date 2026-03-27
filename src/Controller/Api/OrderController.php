@@ -10,6 +10,7 @@ use App\Enum\OrderStatus;
 use App\Enum\PaymentMethod;
 use App\Repository\CustomerRepository;
 use App\Repository\ProductRepository;
+use App\Service\OrderMailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,6 +24,7 @@ class OrderController extends AbstractController
         private EntityManagerInterface $em,
         private ProductRepository $productRepository,
         private CustomerRepository $customerRepository,
+        private OrderMailer $orderMailer,
     ) {}
 
     #[Route('/orders', methods: ['POST'])]
@@ -77,6 +79,8 @@ class OrderController extends AbstractController
 
         $this->em->persist($order);
         $this->em->flush();
+
+        $this->orderMailer->sendNewOrderNotification($order);
 
         return $this->json([
             'orderId' => $order->getOrderNumber(),

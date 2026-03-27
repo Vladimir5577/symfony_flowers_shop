@@ -38,9 +38,9 @@ $  php bin/console app:create-admin admin_login admin_password
 ```
 8. Give permissions to folders
 ```bash
-$ chown -R www-data:www-data public/uploads public/media
-$ chmod -R 775 public/uploads
-$ chmod -R 775 public/media
+$ chown -R www-data:www-data public/uploads public/media \
+    && chmod -R 775 public/uploads \
+    && chmod -R 775 public/media
 ```
 
 9. Admin panel available `http://localhost:8080/admin`
@@ -50,6 +50,11 @@ $ chmod -R 775 public/media
 $ docker compose -f docker-compose.dbgate.yml up -d
 $ docker compose -f docker-compose.dbgate.yml down -v
 ```
+11. Monitoring prometheus and grafana
+```bash
+$ docker compose -f docker-compose.monitoring.yml up -d
+```
+
 
 ## Xdebug
 

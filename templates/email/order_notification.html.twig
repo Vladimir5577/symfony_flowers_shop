@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Новый заказ {{ order.orderNumber }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; color: #333; font-size: 14px; }
+        h1 { color: #d63384; }
+        table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+        th { background: #f8d7da; text-align: left; padding: 8px; }
+        td { padding: 8px; border-bottom: 1px solid #eee; }
+        .total { font-weight: bold; font-size: 16px; margin-top: 16px; }
+        .label { color: #888; width: 160px; }
+    </style>
+</head>
+<body>
+
+<h1>Новый заказ {{ order.orderNumber }}</h1>
+
+<table>
+    <tr>
+        <td class="label">Получатель</td>
+        <td>{{ order.recipientName }}</td>
+    </tr>
+    <tr>
+        <td class="label">Телефон</td>
+        <td>{{ order.recipientPhone }}</td>
+    </tr>
+    <tr>
+        <td class="label">Тип доставки</td>
+        <td>{{ order.deliveryType.value }}</td>
+    </tr>
+    {% if order.deliveryAddress %}
+    <tr>
+        <td class="label">Адрес доставки</td>
+        <td>{{ order.deliveryAddress }}</td>
+    </tr>
+    {% endif %}
+    {% if order.deliveryTimeSlot %}
+    <tr>
+        <td class="label">Время доставки</td>
+        <td>{{ order.deliveryTimeSlot }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+        <td class="label">Способ оплаты</td>
+        <td>{{ order.paymentMethod.value }}</td>
+    </tr>
+    {% if order.comment %}
+    <tr>
+        <td class="label">Комментарий</td>
+        <td>{{ order.comment }}</td>
+    </tr>
+    {% endif %}
+</table>
+
+<h2>Состав заказа</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Товар</th>
+            <th>Кол-во</th>
+            <th>Цена</th>
+            <th>Сумма</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order.items %}
+        <tr>
+            <td>{{ item.productName }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.price }} ₽</td>
+            <td>{{ item.price * item.quantity }} ₽</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<p class="total">Итого: {{ order.totalAmount }} ₽</p>
+
+</body>
+</html>
